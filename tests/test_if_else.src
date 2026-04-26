@@ -1,0 +1,8 @@
+// test_if_else.src — should print 20
+let x = 10;
+if (x == 10) {
+    let y = x * 2;
+    print y;
+} else {
+    print x;
+}

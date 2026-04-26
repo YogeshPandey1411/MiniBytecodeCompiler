@@ -1,0 +1,5 @@
+// test_arithmetic.src
+let a = 6;
+let b = 7;
+let c = a * b;
+print c;

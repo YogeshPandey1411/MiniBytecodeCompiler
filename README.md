@@ -1,141 +1,155 @@
-# Mini Bytecode Compiler and Virtual Machine
+# Mini Bytecode Compiler & Virtual Machine
 
-## 📌 Project Overview
-
-This project implements a **Mini Bytecode Compiler and Virtual Machine** based on core principles of compiler design. The system translates a simple custom programming language into **bytecode**, which is then intended to be executed using a **stack-based virtual machine**.
-
-The project demonstrates the complete compilation pipeline from **source code → intermediate representation → execution model**, similar to real-world systems like JVM and Python VM.
+A four-stage compiler pipeline built in C (C99) for the Compiler Design course.  
+The project takes a custom high-level language, passes it through every classical
+compiler phase, and executes the resulting bytecode on a custom stack-based VM.
 
 ---
 
-## 🎯 Objectives
+## Language Features
 
-* To understand and implement the **compiler pipeline**
-* To design a **custom intermediate representation (bytecode)**
-* To build a **stack-based virtual machine**
-* To demonstrate how high-level code is executed internally
-
----
-
-## ⚙️ Features (Phase 2 - 50–60% Completed)
-
-* ✅ Lexical Analysis (Tokenizer)
-* ✅ Syntax Analysis (Parser)
-* ✅ Abstract Syntax Tree (AST) Generation
-* ✅ Bytecode Generation (Partial)
-* ⏳ Virtual Machine Execution (To be implemented in Phase 3)
+| Feature            | Syntax example                          |
+|--------------------|-----------------------------------------|
+| Variable declaration | `let x = 10;`                         |
+| Assignment           | `x = x + 1;`                         |
+| Arithmetic           | `+ - * /`                             |
+| Comparison           | `== != < > <= >=`                     |
+| Conditional          | `if (cond) { ... } else { ... }`      |
+| Loop                 | `while (cond) { ... }`               |
+| Output               | `print expr;`                         |
+| Comments             | `// single-line comment`              |
 
 ---
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
-MiniBytecodeCompiler/
-│
+mini_compiler/
+├── include/
+│   ├── common.h      — shared types: Token, ASTNode, Instruction, CodeObject
+│   ├── lexer.h
+│   ├── parser.h
+│   ├── codegen.h
+│   └── vm.h
 ├── src/
-│   ├── main.c
-│   ├── lexer.c / lexer.h
-│   ├── parser.c / parser.h
-│   ├── ast.c / ast.h
-│   ├── codegen.c / codegen.h
-│   ├── vm.c / vm.h
-│
+│   ├── main.c        — interactive menu + pipeline runner
+│   ├── lexer.c       — Phase 1: tokeniser
+│   ├── parser.c      — Phase 2: recursive-descent parser → AST
+│   ├── codegen.c     — Phase 3: AST walker → bytecode
+│   └── vm.c          — Phase 4: stack-based virtual machine
+├── tests/
+│   ├── test_arithmetic.src
+│   ├── test_if_else.src
+│   └── test_while.src
 ├── examples/
-│   └── test1.txt
-│
+│   ├── factorial.src
+│   └── fizz_check.src
 ├── Makefile
 └── README.md
 ```
 
 ---
 
-## 🔄 Compilation Pipeline
+## Build & Run
 
-```
-Source Code
-    ↓
-Lexical Analyzer
-    ↓
-Parser + AST
-    ↓
-Bytecode Generator
-    ↓
-Virtual Machine (Phase 3)
-    ↓
-Execution Output
-```
-
----
-
-## 🧠 Technologies Used
-
-* Language: **C**
-* Concepts: **Compiler Design, AST, Bytecode, Virtual Machine**
-* Tools: **GCC, Git, GitHub**
-
----
-
-## ▶️ How to Run
-
-### Step 1: Compile the project
-
-```
+```bash
+# Build
 make
-```
 
-### Step 2: Run the compiler
-
-```
+# Run interactive menu
 ./compiler
+
+# Compile a source file directly
+./compiler examples/factorial.src
+
+# Run all tests
+make test
+
+# Clean build artifacts
+make clean
 ```
 
 ---
 
-## 📌 Example
+## Pipeline Phases
 
-### Input
+### Phase 1 — Lexer  (`src/lexer.c`)
+Reads raw source text and converts it into a flat list of **tokens**.  
+Each token has a type (NUMBER, IDENT, keyword, operator, …) and a line number.  
+- Uses a single-pass character scan.  
+- Skips whitespace and `//` comments.  
+- Reports unknown characters with a line-number error.
 
+### Phase 2 — Parser  (`src/parser.c`)
+Converts the token list into an **Abstract Syntax Tree (AST)** using
+recursive-descent parsing.
+
+Grammar (simplified):
 ```
-print x + 5
+program   → stmt*
+stmt      → let_stmt | assign_stmt | print_stmt | if_stmt | while_stmt
+expr      → comparison
+comparison→ add_sub ( ('<'|'>'|'<='|'>='|'=='|'!=') add_sub )?
+add_sub   → mul_div ( ('+'|'-') mul_div )*
+mul_div   → primary ( ('*'|'/') primary )*
+primary   → NUMBER | IDENT | '(' expr ')'
 ```
 
-### Output (Phase 2)
+### Phase 3 — Code Generator  (`src/codegen.c`)
+Walks the AST and emits a flat array of **bytecode instructions**.  
+Handles:
+- `PUSH` / `LOAD` / `STORE` for values and variables  
+- `ADD` `SUB` `MUL` `DIV` for arithmetic  
+- `CMP_*` for comparisons  
+- `JMP` / `JZ` with **back-patching** for if/else and while loops  
 
-```
-LOAD x
-PUSH 5
-ADD
-PRINT
-```
+### Phase 4 — Virtual Machine  (`src/vm.c`)
+A simple **stack-based interpreter** that executes the bytecode.  
+- Maintains an integer stack and a variable store (name → int).  
+- Instruction pointer advances linearly; jump instructions redirect it.  
+- Reports runtime errors (division by zero, undefined variable, etc.).
 
 ---
 
-## 👥 Team Members
+## Team Division of Work
 
-* **Yogesh Pandey** (Team Lead)
-* Avdhesh Sayana
-* Rishav Kukreti
-* Animesh Tripathi
-
----
-
-## 📅 Future Work (Phase 3)
-
-* Implement full **Virtual Machine execution**
-* Support multiple statements
-* Add error handling
-* Extend language features (loops, conditions)
+| Member | Component                     |
+|--------|-------------------------------|
+| TL     | `main.c` + `common.h` + build system |
+| M2     | `lexer.c` / `lexer.h`         |
+| M3     | `parser.c` / `parser.h`       |
+| M4     | `codegen.c` + `vm.c`          |
 
 ---
 
-## 📖 References
+## Sample Output
 
-* Compilers: Principles, Techniques, and Tools (Dragon Book)
-* Java Virtual Machine Documentation
-* Python Virtual Machine Concepts
+Running `./compiler examples/factorial.src` produces:
 
----
+```
+PHASE 1 : LEXER  (Tokeniser)
+  LINE  TYPE          VALUE
+  ...tokens listed...
+  ✓ Lexer produced N token(s).
 
-## ⭐ Conclusion
+PHASE 2 : PARSER  (AST Builder)
+  BLOCK (4 stmts)
+    ASSIGN(n)  NUM(5)
+    ASSIGN(result)  NUM(1)
+    ...
+  ✓ Parser built AST successfully.
 
-This project provides a hands-on implementation of compiler design concepts and demonstrates how a programming language is translated and executed internally using a virtual machine.
+PHASE 3 : CODE GENERATOR  (Bytecode)
+  ADDR  OPCODE    OPERAND
+  0000  PUSH      5
+  0001  STORE     n
+  ...
+  ✓ Code generator emitted N instruction(s).
+
+PHASE 4 : VIRTUAL MACHINE  (Execution)
+  Program Output:
+  ─────────────────────────────────────────
+  120
+  ─────────────────────────────────────────
+  ✓ VM finished execution.
+```

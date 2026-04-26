@@ -1,0 +1,6 @@
+// fizz_check.src — print multiples of 3 up to 30
+let i = 3;
+while (i <= 30) {
+    print i;
+    i = i + 3;
+}
