@@ -76,10 +76,11 @@ int lexer_tokenize(const char *src, Token *tokens, int max_tokens) {
         /* Single-char tokens */
         t->value[0] = c; t->value[1] = '\0';
         switch (c) {
-            case '+': t->type = TOK_PLUS;   break;
-            case '-': t->type = TOK_MINUS;  break;
-            case '*': t->type = TOK_STAR;   break;
-            case '/': t->type = TOK_SLASH;  break;
+            case '+': t->type = TOK_PLUS;    break;
+            case '-': t->type = TOK_MINUS;   break;
+            case '*': t->type = TOK_STAR;    break;
+            case '/': t->type = TOK_SLASH;   break;
+            case '%': t->type = TOK_PERCENT; break;
             case '=': t->type = TOK_EQ;     break;
             case '<': t->type = TOK_LT;     break;
             case '>': t->type = TOK_GT;     break;
@@ -118,6 +119,7 @@ const char *token_type_name(TokenType t) {
         case TOK_MINUS:   return "MINUS";
         case TOK_STAR:    return "STAR";
         case TOK_SLASH:   return "SLASH";
+        case TOK_PERCENT: return "PERCENT";
         case TOK_EQ:      return "ASSIGN";
         case TOK_EQEQ:    return "EQ_EQ";
         case TOK_NEQ:     return "NOT_EQ";

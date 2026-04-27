@@ -48,6 +48,7 @@ static int gen_expr(const ASTNode *node) {
                 case '-': emit(OP_SUB,     0, NULL); break;
                 case '*': emit(OP_MUL,     0, NULL); break;
                 case '/': emit(OP_DIV,     0, NULL); break;
+                case '%': emit(OP_MOD,     0, NULL); break;
                 case '<': emit(OP_CMP_LT,  0, NULL); break;
                 case '>': emit(OP_CMP_GT,  0, NULL); break;
                 case 'l': emit(OP_CMP_LE,  0, NULL); break;
@@ -152,6 +153,7 @@ static const char *opcode_name(Opcode op) {
         case OP_SUB:     return "SUB";
         case OP_MUL:     return "MUL";
         case OP_DIV:     return "DIV";
+        case OP_MOD:     return "MOD";
         case OP_CMP_EQ:  return "CMP_EQ";
         case OP_CMP_NEQ: return "CMP_NEQ";
         case OP_CMP_LT:  return "CMP_LT";

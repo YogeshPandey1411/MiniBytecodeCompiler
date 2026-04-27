@@ -219,8 +219,8 @@ static ASTNode *parse_mul_div(void) {
     ASTNode *left = parse_primary();
     if (!left) return NULL;
 
-    while (check(TOK_STAR) || check(TOK_SLASH)) {
-        char op = peek()->type == TOK_STAR ? '*' : '/';
+    while (check(TOK_STAR) || check(TOK_SLASH) || check(TOK_PERCENT)) {
+        char op = peek()->type == TOK_STAR ? '*' : (peek()->type == TOK_SLASH ? '/' : '%');
         advance();
         ASTNode *right = parse_primary();
         if (!right) return NULL;

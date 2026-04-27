@@ -83,8 +83,14 @@ int vm_execute(const CodeObject *obj) {
             case OP_MUL: { int b = pop(), a = pop(); push(a * b); break; }
             case OP_DIV: {
                 int b = pop(), a = pop();
-                if (b == 0) { fprintf(stderr, COL_RED "[VM] Division by zero\n" COL_RESET); return -1; }
+                if (b == 0) { fprintf(stderr, "[VM] Division by zero\n"); return -1; }
                 push(a / b);
+                break;
+            }
+            case OP_MOD: {
+                int b = pop(), a = pop();
+                if (b == 0) { fprintf(stderr, "[VM] Modulo by zero\n"); return -1; }
+                push(a % b);
                 break;
             }
 

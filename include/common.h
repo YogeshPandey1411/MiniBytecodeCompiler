@@ -31,7 +31,7 @@ typedef enum {
     /* Keywords */
     TOK_LET, TOK_PRINT, TOK_IF, TOK_ELSE, TOK_WHILE,
     /* Operators */
-    TOK_PLUS, TOK_MINUS, TOK_STAR, TOK_SLASH,
+    TOK_PLUS, TOK_MINUS, TOK_STAR, TOK_SLASH, TOK_PERCENT,
     TOK_EQ, TOK_EQEQ, TOK_NEQ, TOK_LT, TOK_GT, TOK_LE, TOK_GE,
     /* Delimiters */
     TOK_LPAREN, TOK_RPAREN, TOK_LBRACE, TOK_RBRACE, TOK_SEMI,
@@ -85,7 +85,7 @@ typedef enum {
     OP_PUSH,    /* push immediate int */
     OP_LOAD,    /* load variable onto stack */
     OP_STORE,   /* pop stack → variable */
-    OP_ADD, OP_SUB, OP_MUL, OP_DIV,
+    OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD,
     OP_CMP_EQ, OP_CMP_NEQ,
     OP_CMP_LT,  OP_CMP_GT,
     OP_CMP_LE,  OP_CMP_GE,
